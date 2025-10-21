@@ -1,0 +1,493 @@
+trade_tool:
+  summary: "Change team_id for a player"
+  tags:
+    - Admin
+  consumes:
+    - application/json
+  parameters:
+    - in: body
+      name: body
+      description: Trade player between teams
+      required: true
+      schema:
+        type: object
+        required:
+          - player_name
+          - old_team_name
+          - new_team_name
+        properties:
+          player_name:
+            type: string
+            description: Full name of the player
+            example: "Shai Gilgeous-Alexander"
+          old_team_name:
+            type: string
+            description: Current team name
+            example: "Oklahoma City Thunder"
+          new_team_name:
+            type: string
+            description: Destination team name
+            example: "Indiana Pacers"
+  responses:
+    200:
+      description: Player traded successfully
+      schema:
+        type: object
+        properties:
+          msg:
+            type: string
+            example: "Trade completed successfully"
+          player_id:
+            type: integer
+            example: 1001
+          player_name:
+            type: string
+            example: "Shai Gilgeous-Alexander"
+          team_id_old:
+            type: integer
+            example: 25
+          team_id_new:
+            type: integer
+            example: 11
+    400:
+      description: Missing required fields
+      schema:
+        type: object
+        properties:
+          error:
+            type: string
+            example: "Missing required fields"
+    500:
+      description: Internal server error
+      schema:
+        type: object
+        properties:
+          error:
+            type: string
+            example: "Database connection failed"
+
+get_game_stats:
+  summary: " Get team totals and player stats from one specific game"
+  tags:
+    - Stats
+  consumes:
+    - application/json
+  parameters:
+    - in: body
+      name: body
+      description: Game statistics request
+      required: true
+      schema:
+        type: object
+        required:
+          - game_id
+        properties:
+          game_id:
+            type: integer
+            description: Game id
+            example: 1
+  responses:
+    200:
+      description: Game statistics retrieved successfully
+      schema:
+        type: object
+        properties:
+          game_info:
+            type: object
+            description: Basic game information
+            properties:
+              game_id:
+                type: integer
+                example: 1
+              date:
+                type: string
+                example: "2025-06-05"
+              home_team:
+                type: string
+                example: "Oklahoma City Thunder"
+              home_team_id:
+                type: string
+                example: "18"
+              home_score:
+                type: integer
+                example: 110
+              away_team:
+                type: string
+                example: "Indiana Pacers"
+              away_team_id:
+                type: string
+                example: "9"
+              away_score:
+                type: integer
+                example: 111
+          home_players:
+            type: array
+            description: Statistics for home team players
+            items:
+              type: object
+              properties:
+                player_id:
+                  type: integer
+                  example: 33
+                player_name:
+                  type: string
+                  example: "Shai Gilgeous-Alexander"
+                minutes_played:
+                  type: number
+                  format: float
+                  example: 40.0
+                points:
+                  type: integer
+                  example: 38
+                assists:
+                  type: integer
+                  example: 3
+                total_rebounds:
+                  type: integer
+                  example: 5
+                defensive_rebounds:
+                  type: integer
+                  example: 5
+                offensive_rebounds:
+                  type: integer
+                  example: 0
+                steals:
+                  type: integer
+                  example: 3
+                blocks:
+                  type: integer
+                  example: 0
+                turnovers:
+                  type: integer
+                  example: 2
+                personal_fouls:
+                  type: integer
+                  example: 2
+                field_goals_made:
+                  type: integer
+                  example: 14
+                field_goals_attempted:
+                  type: integer
+                  example: 30
+                field_goal_percentage:
+                  type: number
+                  format: float
+                  example: 0.467
+                three_pointers_made:
+                  type: integer
+                  example: 3
+                three_pointers_attempted:
+                  type: integer
+                  example: 6
+                three_point_percentage:
+                  type: number
+                  format: float
+                  example: 0.5
+                  nullable: true
+                free_throws_made:
+                  type: integer
+                  example: 7
+                free_throws_attempted:
+                  type: integer
+                  example: 8
+                free_throw_percentage:
+                  type: number
+                  format: float
+                  example: 0.875
+                  nullable: true
+                plus_minus:
+                  type: integer
+                  example: 3
+          away_players:
+            type: array
+            description: Statistics for away team players
+            items:
+              type: object
+              properties:
+                player_id:
+                  type: integer
+                  example: 1
+                player_name:
+                  type: string
+                  example: "Tyrese Haliburton"
+                minutes_played:
+                  type: number
+                  format: float
+                  example: 39.0
+                points:
+                  type: integer
+                  example: 14
+                assists:
+                  type: integer
+                  example: 6
+                total_rebounds:
+                  type: integer
+                  example: 10
+                defensive_rebounds:
+                  type: integer
+                  example: 10
+                offensive_rebounds:
+                  type: integer
+                  example: 0
+                steals:
+                  type: integer
+                  example: 0
+                blocks:
+                  type: integer
+                  example: 1
+                turnovers:
+                  type: integer
+                  example: 3
+                personal_fouls:
+                  type: integer
+                  example: 2
+                field_goals_made:
+                  type: integer
+                  example: 6
+                field_goals_attempted:
+                  type: integer
+                  example: 13
+                field_goal_percentage:
+                  type: number
+                  format: float
+                  example: 0.462
+                three_pointers_made:
+                  type: integer
+                  example: 2
+                three_pointers_attempted:
+                  type: integer
+                  example: 7
+                three_point_percentage:
+                  type: number
+                  format: float
+                  example: 0.286
+                  nullable: true
+                free_throws_made:
+                  type: integer
+                  example: 0
+                free_throws_attempted:
+                  type: integer
+                  example: 0
+                free_throw_percentage:
+                  type: number
+                  format: float
+                  nullable: true
+                plus_minus:
+                  type: integer
+                  example: 12
+    404:
+      description: No games found for the specified id
+      schema:
+        type: object
+        properties:
+          error:
+            type: string
+            example: "No games for this id"
+    400:
+      description: Missing required fields
+      schema:
+        type: object
+        properties:
+          error:
+            type: string
+            example: "Missing required fields"
+    500:
+      description: Internal server error
+      schema:
+        type: object
+        properties:
+          error:
+            type: string
+            example: "Database connection failed"
+
+get_date_stats:
+  summary: "Get all games for a specific date"
+  tags:
+    - Stats
+  consumes:
+    - application/json
+  parameters:
+    - in: body
+      name: body
+      description: Date statistics request
+      required: true
+      schema:
+        type: object
+        required:
+          - game_date
+        properties:
+          game_date:
+            type: string
+            format: date
+            description: Date in YYYY-MM-DD format
+            example: "2024-01-15"
+  responses:
+    200:
+      description: Game statistics retrieved successfully
+      schema:
+        type: object
+        properties:
+          game_date:
+            type: string
+            description: Basic game information
+            example: "2025-06-05"
+          games_count:
+            type: integer
+            description: Number of games for this date
+            example: 2
+          games_info:
+            type: array
+            description: Statistics for the games of the date
+            items:
+              type: object
+              properties:
+                away_best_assister:
+                  type: integer
+                  example: 33
+                away_best_assister_assists:
+                  type: integer
+                  example: 33
+                away_best_fantasy_pointer:
+                  type: string
+                  example: 'Lebrick Calvo'
+                away_best_fantasy_pointer_points:
+                  type: integer
+                  example: 33
+                away_best_rebounder:
+                  type: string
+                  example: 'Lebrick Calvo'
+                away_best_rebounder_rebounds:
+                  type: integer
+                  example: 33
+                away_best_scorer:
+                  type: string
+                  example: 'Lebrick Calvo'
+                away_best_scorer_points:
+                  type: integer
+                  example: 33
+                away_score:
+                  type: integer
+                  example: 33
+                away_team:
+                  type: integer
+                  example: 33
+                away_team_id:
+                  type: integer
+                  example: 33
+                date:
+                  type: date
+                  example: '2025-06-05'
+                game_id:
+                  type: integer
+                  example: 33
+                home_best_assister:
+                  type: string
+                  example: 'Lebrick Calvo'
+                home_best_assister_assists:
+                  type: integer
+                  example: 33
+                home_best_fantasy_pointer:
+                  type: string
+                  example: 'Lebrick Calvo'
+                home_best_fantasy_pointer_points:
+                  type: integer
+                  example: 33
+                home_best_rebounder:
+                  type: string
+                  example: 'Lebrick Calvo'
+                home_best_rebounder_rebounds:
+                  type: integer
+                  example: 33
+                home_best_scorer:
+                  type: string
+                  example: 'Lebrick Calvo'
+                home_best_scorer_points:
+                  type: integer
+                  example: 33
+                home_score:
+                  type: integer
+                  example: 33
+                home_team:
+                  type: integer
+                  example: 33
+                home_team_id:
+                  type: integer
+                  example: 33
+    404:
+      description: No games found for the specified date
+      schema:
+        type: object
+        properties:
+          error:
+            type: string
+            example: "No games for this date"
+    400:
+      description: Missing required fields
+      schema:
+        type: object
+        properties:
+          error:
+            type: string
+            example: "Missing required fields"
+    500:
+      description: Internal server error
+      schema:
+        type: object
+        properties:
+          error:
+            type: string
+            example: "Database connection failed"
+
+login:
+  summary: "Login main process"
+  tags:
+    - Auth
+  consumes:
+    - application/json
+  parameters:
+    - in: body
+      name: body
+      description: Login process
+      required: true
+      schema:
+        type: object
+        required:
+          - email
+          - password
+        properties:
+          email:
+            type: string
+            format: string
+            description: login email
+            example: "pepe@gmail.com"
+          password:
+            type: string
+            format: string
+            description: login password
+            example: "1234"
+  responses:
+    200:
+      description: Login works fine
+      schema:
+        type: object
+        properties:
+          token:
+            type: string
+            description: JWT token
+            example: "xxx"
+    401:
+      description: Invalid credentials
+      schema:
+        type: object
+        properties:
+          error:
+            type: string
+            example: "Invalid credentials"
+    500:
+      description: Internal server error
+      schema:
+        type: object
+        properties:
+          error:
+            type: string
+            example: "Database connection failed"
