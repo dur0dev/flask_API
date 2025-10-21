@@ -21,5 +21,5 @@ Run Command => python app.py => http://localhost:5000 up<br>
 You can test all the available endpoints on => http://127.0.0.1:5000/apidocs/<br>
 
 ### 🙋‍♂️ Authors
-⚙️🧠Backend => dur0dev<br>
+⚙️🧠Backend and BBDD=> dur0dev<br>
 🖼️🔒Frontend & Security => jchain4
