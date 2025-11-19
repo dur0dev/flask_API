@@ -46,7 +46,9 @@ class Config:
         'http://localhost:3000',  # React (Create React App)
         'http://localhost:5173',  # Vite
         'http://127.0.0.1:3000',
-        'http://127.0.0.1:5173'
+        'http://127.0.0.1:5173',
+        'http://amazing_volhard:5000',  # nombre del contenedor backend
+        'http://sweet_hertz:5173'       # nombre del contenedor frontend (si lo usas en navegador)
     ]
     
     # ====================================

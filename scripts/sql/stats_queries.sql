@@ -25,18 +25,18 @@ WHERE g.id = :game_id
 WITH team_best_stats AS (
     SELECT 
         g.id as game_id,
-        g.game_date,
-        ht.name as home_team,
-        ht.code as home_team_short,
+        g.game_datetime,
+        ht.full_name as home_team,
+        ht.abbreviation as home_team_short,
         g.home_team_id,
-        g.home_score,
-        at.code as away_team_short,
-        at.name as away_team,
+        gs.score,
+        at.abbreviation as away_team_short,
+        at.full_name as away_team,
         g.away_team_id,
-        g.away_score,
+        gs.opponent_score,
         
         -- Home team best players with stats
-        (SELECT fp.player_name FROM nba.fact_player_game_stats fp 
+        (SELECT p.full_name FROM nba.dim_players dp 
          WHERE fp.game_id = g.id AND fp.team_id = g.home_team_id 
          ORDER BY fp.fantasy_points DESC LIMIT 1) as home_best_fantasy_pointer,
         (SELECT fp.fantasy_points FROM nba.fact_player_game_stats fp 
@@ -96,6 +96,9 @@ WITH team_best_stats AS (
     FROM nba.dim_games g
     JOIN nba.dim_teams ht ON g.home_team_id = ht.id
     JOIN nba.dim_teams at ON g.away_team_id = at.id
+    JOIN nba.dim_players p ON p.id = ps.person_id
+    JOIN nba.fact_team_game_stats gs ON g.id = gs.game_id
+    JOIN nba.fact_player_game_stats ps ON g.id = ps.game_id
     WHERE g.game_date = :game_date
 )
 SELECT * FROM team_best_stats;
