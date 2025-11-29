@@ -6,6 +6,7 @@ import logging
 from datetime import datetime
 from utils.sql_loader import get_query
 from utils.swagger_loader import swagger_doc
+from datetime import datetime, timedelta
 
 stats_api = Blueprint("stats_api", __name__)
 
@@ -87,45 +88,53 @@ def get_date_stats():
     game_date = str(data.get("game_date"))
 
     if validate_game_date(game_date):
-      logger.info(f"✅Date is correct✅")
+      logger.info(f"✅Date is correct✅: "+game_date)
       logger.info(f"Prepairing game info...")
 
-      game_info_df = pd.read_sql(text(get_query('get_total_date_info')), engine, params={"game_date": game_date})
+      try:
+        game_info_df = pd.read_sql(text(get_query('get_total_date_info')), engine, params={"game_date": game_date})
+      except Exception as e:
+        print(f"Error executing query: {e}")
+        print(f"Query: {get_query('get_total_date_info')}")
+        print(f"Params: {game_date}")
 
       if game_info_df.empty:
         return jsonify({"error": "No game for this date"}), 404
       
       # Convert all games to proper format
       games_list = []
-      for _, row in game_info_df.iterrows():
-        games_list.append({
-            "game_id": int(row['game_id']),
-            "date": str(row['game_date']),
-            "home_team": str(row['home_team']),
-            "home_team_short": str(row['home_team_short']),
-            "home_team_id": str(row['home_team_id']),
-            "home_score": int(row['home_score']),
-            "home_best_fantasy_pointer": str(row['home_best_fantasy_pointer']),
-            "home_best_fantasy_pointer_points": int(row['home_best_fantasy_pointer_points']),
-            "home_best_scorer": str(row['home_best_scorer']),
-            "home_best_scorer_points": int(row['home_best_scorer_points']),
-            "home_best_rebounder": str(row['home_best_rebounder']),
-            "home_best_rebounder_rebounds": int(row['home_best_rebounder_rebounds']),
-            "home_best_assister": str(row['home_best_assister']),
-            "home_best_assister_assists": int(row['home_best_assister_assists']),
-            "away_team": str(row['away_team']),
-            "away_team_short": str(row['away_team_short']),
-            "away_team_id": str(row['away_team_id']),
-            "away_score": int(row['away_score']),
-            "away_best_fantasy_pointer": str(row['away_best_fantasy_pointer']),
-            "away_best_fantasy_pointer_points": int(row['away_best_fantasy_pointer_points']),
-            "away_best_scorer": str(row['away_best_scorer']),
-            "away_best_scorer_points": int(row['away_best_scorer_points']),
-            "away_best_rebounder": str(row['away_best_rebounder']),
-            "away_best_rebounder_rebounds": int(row['away_best_rebounder_rebounds']),
-            "away_best_assister": str(row['away_best_assister']),
-            "away_best_assister_assists": int(row['away_best_assister_assists']),
-        })
+      try:
+        for _, row in game_info_df.iterrows():
+          games_list.append({
+              "game_id": int(row['game_id']),
+              "date": row['game_date'].strftime('%Y-%m-%d %H:%M:%S') if pd.notna(row['game_date']) else None,
+              "home_team": str(row['home_team']),
+              "home_team_short": str(row['home_team_short']),
+              "home_team_id": str(row['home_team_id']),
+              "home_score": int(row['home_score']),
+              "home_best_fantasy_pointer": str(row['home_best_fantasy_pointer']),
+              "home_best_fantasy_pointer_points": str(row['home_best_fantasy_pointer_points']),
+              "home_best_scorer": str(row['home_best_scorer']),
+              "home_best_scorer_points": int(row['home_best_scorer_points']),
+              "home_best_rebounder": str(row['home_best_rebounder']),
+              "home_best_rebounder_rebounds": int(row['home_best_rebounder_rebounds']),
+              "home_best_assister": str(row['home_best_assister']),
+              "home_best_assister_assists": int(row['home_best_assister_assists']),
+              "away_team": str(row['away_team']),
+              "away_team_short": str(row['away_team_short']),
+              "away_team_id": str(row['away_team_id']),
+              "away_score": int(row['away_score']),
+              "away_best_fantasy_pointer": str(row['away_best_fantasy_pointer']),
+              "away_best_fantasy_pointer_points": str(row['away_best_fantasy_pointer_points']),
+              "away_best_scorer": str(row['away_best_scorer']),
+              "away_best_scorer_points": int(row['away_best_scorer_points']),
+              "away_best_rebounder": str(row['away_best_rebounder']),
+              "away_best_rebounder_rebounds": int(row['away_best_rebounder_rebounds']),
+              "away_best_assister": str(row['away_best_assister']),
+              "away_best_assister_assists": int(row['away_best_assister_assists']),
+          })
+      except Exception as e:
+        print(f"Error formatting df: {e}")
 
       response_data = {
         "games_count": len(games_list),
